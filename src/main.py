@@ -38,6 +38,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
         )
     )
 
+    parser.add_argument(
+        "-s", "--separator",
+        default=";",
+        help=(
+            "Separator used to separate the cells of the CSV-like structure."
+            "(default: ;"
+        )
+    )
+
     return parser
 
 
@@ -56,7 +65,7 @@ def main():
     # search file for pattern
     for line in input_lines:
         to_store = line
-        for segment in line.split(";"):
+        for segment in line.split(args.separator):
             to_replace = regex_matcher.search(segment)
             if to_replace is not None:
                 to_store = to_store.replace(to_replace.group(), convert_date(to_replace.group(),
