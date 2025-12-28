@@ -1,77 +1,95 @@
-# Date Format Swap Utility
+# CSV Date Converter
 
-A small command-line utility that scans a CSV-like file for date strings and converts them from `DD/MM/YYYY` (or similar) to the ISO format `YYYY-MM-DD`.
+A small command-line tool that scans a CSV-like file for date values and converts them into ISO format (`YYYY-MM-DD`).
 
-The tool is flexible enough to handle different date separators and allows custom input/output paths and regex patterns.
+It’s designed for simple, delimiter-based files (not strict RFC CSV parsing) and is especially useful when dates are embedded in larger datasets.
 
 ---
 
-## What it does
+## Features
 
-* Reads a text/CSV-like file (semicolon-separated by default)
-* Finds date strings matching a configurable regex
-* Converts matched dates from `DD/MM/YYYY` → `YYYY-MM-DD`
-* Writes the transformed content to a new output file
+* Converts dates like `DD/MM/YYYY`, `DD.MM.YYYY`, `DD-MM-YYYY`, etc. to `YYYY-MM-DD`
+* Supports different date layouts via a format flag
+* Works on any CSV-like file with a configurable cell separator
+* Preserves all non-date content unchanged
 
 ---
 
 ## Requirements
 
-* Python 3.8+
-* No external dependencies (standard library only)
+* Python 3.10+ (uses `match` / `case`)
+* No external dependencies
 
 ---
 
 ## Usage
 
-Run the script from the command line:
-
 ```bash
-python main.py
+python main.py [options]
 ```
 
-By default, it will:
+### Options
 
-* Read from: `src/input.csv`
-* Write to: `src/out.csv`
-* Match dates using the regex: `\d\d.\d\d.\d\d\d\d`
+| Flag | Long form       | Description               | Default         |
+| ---- | --------------- | ------------------------- | --------------- |
+| `-f` | `--file`        | Input file path           | `src/input.csv` |
+| `-o` | `--output`      | Output file path          | `src/out.csv`   |
+| `-d` | `--date_format` | Date format to search for | `DD.MM.YYYY`    |
+| `-s` | `--separator`   | Cell separator character  | `;`             |
 
 ---
 
-## Command-line options
+## Date Format Syntax
 
-| Option           | Description                          | Default              |
-| ---------------- | ------------------------------------ | -------------------- |
-| `-f`, `--file`   | Path to the input file               | `src/input.csv`      |
-| `-o`, `--output` | Path to the output file              | `src/out.csv`        |
-| `-r`, `--regex`  | Regex pattern used to identify dates | `\d\d.\d\d.\d\d\d\d` |
+The `--date_format` option defines how dates appear in the input file.
 
-### Example
+* `D`, `M`, `Y` represent digits
+* `.` means *any separator character* (`/`, `.`, `-`, etc.)
+
+### Supported formats
+
+* `DD.MM.YYYY`
+* `YYYY.MM.DD`
+
+### Examples
+
+| Input        | Format       | Output       |
+| ------------ | ------------ | ------------ |
+| `31/12/2023` | `DD.MM.YYYY` | `2023-12-31` |
+| `31.12.2023` | `DD.MM.YYYY` | `2023-12-31` |
+| `2023-12-31` | `YYYY.MM.DD` | `2023-12-31` |
+
+---
+
+## Examples
 
 ```bash
-python main.py -f data/raw.csv -o data/converted.csv
+python main.py \
+  --file data/input.csv \
+  --output data/output.csv \
+  --date_format DD.MM.YYYY \
+  --separator ";"
 ```
 
-Using a custom regex (e.g. dots instead of slashes):
+This will scan each cell of the input file, find matching dates, convert them, and write the result to the output file.
 
-```bash
-python main.py -r "\d\d\.\d\d\.\d\d\d\d"
-```
+While this was done in the example, **the input and output files don't have to be specified**. By default, the tool will take the input from **input.csv**, and will write the output to **output.csv** (both located in the projects source folder).
 
 ---
 
 ## Bonus Hint
 To confirm that nothing was changed that shouldn't have been, you can use a file compare checker like the one accessible at https://www.diffchecker.com/text-compare/
 
+---
+
 ## Notes & Limitations
 
-* The tool assumes dates are in `DD/MM/YYYY` order internally.
-* The separator character does **not** matter (`/`, `.`, `-`, etc.), as long as the regex matches.
-* Files are processed line by line and split on semicolons (`;`).
-* No validation is performed on date correctness (e.g. `32/13/2023`).
+* This is **not a full CSV parser** (quoted fields, escaped separators, etc. are not handled).
+* Only the two date formats listed above are supported.
+* Dates are detected using regular expressions; malformed dates may still be converted if they match the pattern.
 
 ---
 
 ## License
 
-MIT
+MIT (or whatever you prefer)

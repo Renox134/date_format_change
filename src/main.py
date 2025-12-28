@@ -2,8 +2,8 @@ import re
 import argparse
 
 DEFAULT_INPUT_PATH = "src/input.csv"
-DEFAULT_OUTPUT_PATH = "src/out.csv"
-DEFAULT_DATE_FORMAT = "DD%MM%YYYY"
+DEFAULT_OUTPUT_PATH = "src/output.csv"
+DEFAULT_DATE_FORMAT = "DD.MM.YYYY"
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -33,8 +33,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "-d", "--date_format",
         default=DEFAULT_DATE_FORMAT,
         help=(
-            "Date format of the entries that should be changed. The '%' character means that any separator (e.g. ./-,) is allowed."
-            "(default: DD%MM%YYYY"
+            "Date format of the entries that should be changed. Valid date formats are DD.MM.YYYY and YYYY.MM.DD. The '.' character means that any separator (e.g. ./-,) is allowed."
+            "(default: DD.MM.YYYY)"
         )
     )
 
@@ -79,24 +79,24 @@ def main():
 
 def convert_date(to_convert: str, format: str) -> str:
     """
-    Expects a date of type DD%MM%YYYY or YYYY%MM%DD and transforms it into a
+    Expects a date of type DD.MM.YYYY or YYYY.MM.DD and transforms it into a
     date of type YYYY-MM-DD.
     The separation character of the input doesn't matter.
 
     :param to_convert: The date of type DD/MM/YYYY to convert.
     :type to_convert: str
-    :param format: The date format, either DD%MM%YYYY or YYYY%MM%DD.
+    :param format: The date format, either DD.MM.YYYY or YYYY.MM.DD.
     :type format: str
     :return: The date, formated in YYYY-MM-DD.
     :rtype: str
     """
     match format:
-        case "DD%MM%YYYY":
+        case "DD.MM.YYYY":
             return f"{to_convert[6:10]}-{to_convert[3:5]}-{to_convert[:2]}"
-        case "YYYY%MM%DD":
+        case "YYYY.MM.DD":
             return f"{to_convert[:4]}-{to_convert[5:7]}-{to_convert[8:]}"
         case _:
-            raise ValueError("The provided date format was not recognized. Valid date formats are DD%MM%YYYY or YYYY%MM%DD.")
+            raise ValueError("The provided date format was not recognized. Valid date formats are DD.MM.YYYY or YYYY.MM.DD.")
 
 
 def date_format_to_regex(date_format: str) -> str:
