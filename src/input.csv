@@ -2,3 +2,7 @@ some;completely;random ;text; for the purpose of this example;2022-12-13; ----ra
 really, I think;;that basically anything ; can go in between ;2022-12-13; ----or after, for that matter;
 like, for real;; it shouldn't matter (hopefully...); ------- ;13.10.2024;;
 even special characters shouldn't cause problems; \\\""\"&&$ß;13.10.2024;;
+also, ;chars placed in the same cell shouldn't matter either  13.10.2024;;
+
+
+the code also can be used for different formats. For example, this:;2022.12.13; can also be converted, only now you'd need "YYYY%MM%DD" as date_format
